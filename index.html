@@ -35,9 +35,17 @@ img {
     animation: pop 0.6s ease;
 }
 
-@keyframes pop {
-    0% { transform: scale(0.7); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+/* Heartbeat animation */
+.heartbeat {
+    animation: heartbeat 1.2s infinite;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.08); }
+    40% { transform: scale(1); }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); }
 }
 
 button {
@@ -69,14 +77,36 @@ button:hover {
     font-size: 22px;
     margin: 15px 0;
 }
+
+/* Mute Button */
+#muteBtn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    font-size: 20px;
+    background: white;
+    border-radius: 50%;
+    padding: 10px 14px;
+    border: 2px solid #444;
+    cursor: pointer;
+    z-index: 999;
+}
 </style>
 </head>
 
 <body>
 
+<!-- Background Music -->
+<audio id="bg-music" loop>
+    <source src="bg-music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Mute Button -->
+<div id="muteBtn" onclick="toggleMusic()">🔊</div>
+
 <!-- PAGE 1 -->
 <div class="page active" id="page1">
-    <img src="cat1.png">
+    <img src="cat1.png" class="heartbeat">
     <div class="text">hey! i made something for you<br>will you see it?</div>
     <div>
         <button onclick="showPage(3)">YES</button>
@@ -86,38 +116,73 @@ button:hover {
 
 <!-- PAGE 2 -->
 <div class="page" id="page2">
-    <img src="cat2.png">
+    <img src="cat2.png" class="heartbeat">
     <div class="text">HOW DARE YOUU!</div>
     <button onclick="showPage(1)">BACK</button>
 </div>
 
 <!-- PAGE 3 -->
 <div class="page" id="page3">
-    <img src="cat3.png">
+    <img src="cat3.png" class="heartbeat">
     <div class="text">Hehe!<br>click below for the surprise!!</div>
     <button onclick="showPage(4)">NEXT</button>
 </div>
 
 <!-- PAGE 4 -->
 <div class="page" id="page4">
-    <img src="cat4.png" class="clickable" onclick="showPage(5)">
+    <img src="cat4.png" class="clickable heartbeat" onclick="showPage(5)">
     <div class="text">Happy new year my kuchupuchu!!!<br>click on the gift box</div>
 </div>
 
 <!-- PAGE 5 -->
 <div class="page" id="page5">
-    <img src="cat5.png" class="clickable" onclick="showPage(6)">
+    <img src="cat5.png" class="clickable heartbeat" onclick="showPage(6)">
     <div class="text">SMILEEEE<br>Click on the camera to reveal photo!!</div>
 </div>
 
 <!-- PAGE 6 -->
 <div class="page" id="page6">
-    <img src="final.jpg" style="max-width:300px; border:10px solid white; box-shadow:0 0 15px rgba(0,0,0,0.3);">
+    <img src="final.jpg" class="heartbeat" style="max-width:300px; border:10px solid white; box-shadow:0 0 15px rgba(0,0,0,0.3);">
     <div class="text">I Love You ❤️</div>
 </div>
 
 <script>
+let musicStarted = false;
+let fadeInterval = null;
+
+const music = document.getElementById("bg-music");
+
+function playMusic() {
+    if (!musicStarted) {
+        music.currentTime = 31;
+        music.volume = 0;
+        music.play();
+        musicStarted = true;
+
+        fadeInterval = setInterval(() => {
+            if (music.volume < 0.5) {
+                music.volume = Math.min(music.volume + 0.02, 0.5);
+            } else {
+                clearInterval(fadeInterval);
+            }
+        }, 200);
+    }
+}
+
+function toggleMusic() {
+    const btn = document.getElementById("muteBtn");
+    if (music.paused) {
+        music.play();
+        btn.innerText = "🔊";
+    } else {
+        music.pause();
+        btn.innerText = "🔇";
+    }
+}
+
 function showPage(num) {
+    playMusic();
+
     document.querySelectorAll('.page').forEach(p => {
         p.classList.remove('active');
     });
@@ -126,6 +191,15 @@ function showPage(num) {
         document.getElementById('page' + num).classList.add('active');
     }, 150);
 }
+
+// Pause music when tab hidden
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        music.pause();
+    } else {
+        if (musicStarted) music.play();
+    }
+});
 </script>
 
 </body>
