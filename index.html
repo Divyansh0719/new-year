@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You ❤️</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive;
+    background: white;
+    text-align: center;
+}
+
+.page {
+    display: none;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.active {
+    display: flex;
+}
+
+img {
+    max-width: 280px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 40px;
+    font-size: 18px;
+    border-radius: 25px;
+    border: 2px solid #444;
+    background: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #f5f5f5;
+}
+
+.text {
+    font-size: 22px;
+    margin: 15px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page active" id="page1">
+    <img src="cat1.png">
+    <div class="text">hey! i made something for you<br>will you see it?</div>
+    <div>
+        <button onclick="showPage(3)">YES</button>
+        <button onclick="showPage(2)">NO</button>
+    </div>
+</div>
+
+<div class="page" id="page2">
+    <img src="cat2.png">
+    <div class="text">HOW DARE YOUU!</div>
+    <button onclick="showPage(1)">BACK</button>
+</div>
+
+<div class="page" id="page3">
+    <img src="cat3.png">
+    <div class="text">Hehe!<br>click below for the surprise!!</div>
+    <button onclick="showPage(4)">NEXT</button>
+</div>
+
+<div class="page" id="page4">
+    <img src="cat4.png" onclick="showPage(5)" style="cursor:pointer;">
+    <div class="text">Happy new year my kuchupuchu!!!<br>click on the gift box</div>
+</div>
+
+<div class="page" id="page5">
+    <img src="cat5.png" onclick="showPage(6)" style="cursor:pointer;">
+    <div class="text">SMILEEEE<br>Click on the camera to reveal photo!!</div>
+</div>
+
+<div class="page" id="page6">
+    <img src="final.jpg" style="max-width:300px; border:10px solid white; box-shadow:0 0 15px rgba(0,0,0,0.3);">
+    <div class="text">I Love You ❤️</div>
+</div>
+
+<script>
+function showPage(num) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + num).classList.add('active');
+}
+</script>
+
+</body>
+</html>
