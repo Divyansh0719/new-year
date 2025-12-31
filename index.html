@@ -10,6 +10,7 @@ body {
     font-family: 'Comic Sans MS', cursive;
     background: white;
     text-align: center;
+    overflow: hidden;
 }
 
 .page {
@@ -18,14 +19,25 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.6s ease;
 }
 
-.active {
+.page.active {
     display: flex;
+    opacity: 1;
+    transform: scale(1);
 }
 
 img {
     max-width: 280px;
+    animation: pop 0.6s ease;
+}
+
+@keyframes pop {
+    0% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 button {
@@ -36,10 +48,21 @@ button {
     border: 2px solid #444;
     background: white;
     cursor: pointer;
+    transition: 0.3s ease;
 }
 
 button:hover {
     background: #f5f5f5;
+    transform: scale(1.05);
+}
+
+.clickable {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.clickable:hover {
+    transform: scale(1.08);
 }
 
 .text {
@@ -51,6 +74,7 @@ button:hover {
 
 <body>
 
+<!-- PAGE 1 -->
 <div class="page active" id="page1">
     <img src="cat1.png">
     <div class="text">hey! i made something for you<br>will you see it?</div>
@@ -60,28 +84,33 @@ button:hover {
     </div>
 </div>
 
+<!-- PAGE 2 -->
 <div class="page" id="page2">
     <img src="cat2.png">
     <div class="text">HOW DARE YOUU!</div>
     <button onclick="showPage(1)">BACK</button>
 </div>
 
+<!-- PAGE 3 -->
 <div class="page" id="page3">
     <img src="cat3.png">
     <div class="text">Hehe!<br>click below for the surprise!!</div>
     <button onclick="showPage(4)">NEXT</button>
 </div>
 
+<!-- PAGE 4 -->
 <div class="page" id="page4">
-    <img src="cat4.png" onclick="showPage(5)" style="cursor:pointer;">
+    <img src="cat4.png" class="clickable" onclick="showPage(5)">
     <div class="text">Happy new year my kuchupuchu!!!<br>click on the gift box</div>
 </div>
 
+<!-- PAGE 5 -->
 <div class="page" id="page5">
-    <img src="cat5.png" onclick="showPage(6)" style="cursor:pointer;">
+    <img src="cat5.png" class="clickable" onclick="showPage(6)">
     <div class="text">SMILEEEE<br>Click on the camera to reveal photo!!</div>
 </div>
 
+<!-- PAGE 6 -->
 <div class="page" id="page6">
     <img src="final.jpg" style="max-width:300px; border:10px solid white; box-shadow:0 0 15px rgba(0,0,0,0.3);">
     <div class="text">I Love You ❤️</div>
@@ -89,8 +118,13 @@ button:hover {
 
 <script>
 function showPage(num) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page' + num).classList.add('active');
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+    });
+
+    setTimeout(() => {
+        document.getElementById('page' + num).classList.add('active');
+    }, 150);
 }
 </script>
 
