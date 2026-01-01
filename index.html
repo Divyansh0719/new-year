@@ -82,7 +82,6 @@ button:hover {
     margin: 15px 0;
 }
 
-/* Mute Button */
 #muteBtn {
     position: fixed;
     top: 15px;
@@ -105,7 +104,6 @@ button:hover {
     <source src="bg-music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- MUTE BUTTON -->
 <div id="muteBtn" onclick="toggleMusic()">🔊</div>
 
 <!-- PAGE 1 -->
@@ -113,8 +111,8 @@ button:hover {
     <img src="cat1.png" class="heartbeat">
     <div class="text">hey! i made something for you<br>will you see it?</div>
     <div>
-        <button onclick="showPage(3)">YES</button>
-        <button onclick="showPage(2)">NO</button>
+        <button onclick="handleClick(3)">YES</button>
+        <button onclick="handleClick(2)">NO</button>
     </div>
 </div>
 
@@ -122,25 +120,25 @@ button:hover {
 <div class="page" id="page2">
     <img src="cat2.png" class="heartbeat">
     <div class="text">HOW DARE YOUU!</div>
-    <button onclick="showPage(1)">BACK</button>
+    <button onclick="handleClick(1)">BACK</button>
 </div>
 
 <!-- PAGE 3 -->
 <div class="page" id="page3">
     <img src="cat3.png" class="heartbeat">
     <div class="text">Hehe!<br>click below for the surprise!!</div>
-    <button onclick="showPage(4)">NEXT</button>
+    <button onclick="handleClick(4)">NEXT</button>
 </div>
 
 <!-- PAGE 4 -->
 <div class="page" id="page4">
-    <img src="cat4.png" class="clickable heartbeat" onclick="showPage(5)">
+    <img src="cat4.png" class="clickable heartbeat" onclick="handleClick(5)">
     <div class="text">Happy new year my kuchupuchu!!!<br>click on the gift box</div>
 </div>
 
 <!-- PAGE 5 -->
 <div class="page" id="page5">
-    <img src="cat5.png" class="clickable heartbeat" onclick="showPage(6)">
+    <img src="cat5.png" class="clickable heartbeat" onclick="handleClick(6)">
     <div class="text">SMILEEEE<br>Click on the camera to reveal photo!!</div>
 </div>
 
@@ -151,26 +149,35 @@ button:hover {
 </div>
 
 <script>
+const music = document.getElementById("bg-music");
 let musicStarted = false;
 let fadeInterval = null;
-const music = document.getElementById("bg-music");
 
 function startMusic() {
     if (musicStarted) return;
 
     music.currentTime = 31;
     music.volume = 0;
-    music.play().then(() => {
-        fadeInterval = setInterval(() => {
-            if (music.volume < 0.5) {
-                music.volume = Math.min(music.volume + 0.02, 0.5);
-            } else {
-                clearInterval(fadeInterval);
-            }
-        }, 200);
-    }).catch(err => console.log(err));
+    music.play();
+
+    fadeInterval = setInterval(() => {
+        if (music.volume < 0.5) {
+            music.volume += 0.02;
+        } else {
+            clearInterval(fadeInterval);
+        }
+    }, 200);
 
     musicStarted = true;
+}
+
+function handleClick(page) {
+    startMusic();
+
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    setTimeout(() => {
+        document.getElementById("page" + page).classList.add("active");
+    }, 150);
 }
 
 function toggleMusic() {
@@ -182,18 +189,6 @@ function toggleMusic() {
         music.pause();
         btn.innerText = "🔇";
     }
-}
-
-function showPage(num) {
-    startMusic();
-
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-    });
-
-    setTimeout(() => {
-        document.getElementById('page' + num).classList.add('active');
-    }, 150);
 }
 
 document.addEventListener("visibilitychange", () => {
