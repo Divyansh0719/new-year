@@ -21,7 +21,7 @@ body {
     flex-direction: column;
     opacity: 0;
     transform: scale(0.95);
-    transition: all 0.6s ease;
+    transition: 0.6s ease;
 }
 
 .page.active {
@@ -36,8 +36,8 @@ img {
 }
 
 @keyframes pop {
-    0% { transform: scale(0.7); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 .heartbeat {
@@ -60,26 +60,10 @@ button {
     border: 2px solid #444;
     background: white;
     cursor: pointer;
-    transition: 0.3s ease;
 }
 
 button:hover {
-    background: #f5f5f5;
     transform: scale(1.05);
-}
-
-.clickable {
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.clickable:hover {
-    transform: scale(1.08);
-}
-
-.text {
-    font-size: 22px;
-    margin: 15px 0;
 }
 
 #muteBtn {
@@ -87,11 +71,11 @@ button:hover {
     top: 15px;
     right: 15px;
     font-size: 20px;
-    background: white;
-    border-radius: 50%;
     padding: 10px 14px;
+    border-radius: 50%;
     border: 2px solid #444;
     cursor: pointer;
+    background: white;
     z-index: 999;
 }
 </style>
@@ -99,7 +83,6 @@ button:hover {
 
 <body>
 
-<!-- AUDIO -->
 <audio id="bg-music" preload="auto">
     <source src="bg-music.mp3" type="audio/mpeg">
 </audio>
@@ -110,93 +93,82 @@ button:hover {
 <div class="page active" id="page1">
     <img src="cat1.png" class="heartbeat">
     <div class="text">hey! i made something for you<br>will you see it?</div>
-    <div>
-        <button onclick="handleClick(3)">YES</button>
-        <button onclick="handleClick(2)">NO</button>
-    </div>
+    <button onclick="startExperience()">START WITH SOUND 🎵</button>
 </div>
 
 <!-- PAGE 2 -->
 <div class="page" id="page2">
     <img src="cat2.png" class="heartbeat">
     <div class="text">HOW DARE YOUU!</div>
-    <button onclick="handleClick(1)">BACK</button>
+    <button onclick="goPage(3)">BACK</button>
 </div>
 
 <!-- PAGE 3 -->
 <div class="page" id="page3">
     <img src="cat3.png" class="heartbeat">
     <div class="text">Hehe!<br>click below for the surprise!!</div>
-    <button onclick="handleClick(4)">NEXT</button>
+    <button onclick="goPage(4)">NEXT</button>
 </div>
 
 <!-- PAGE 4 -->
 <div class="page" id="page4">
-    <img src="cat4.png" class="clickable heartbeat" onclick="handleClick(5)">
-    <div class="text">Happy new year my kuchupuchu!!!<br>click on the gift box</div>
+    <img src="cat4.png" class="heartbeat" onclick="goPage(5)">
+    <div class="text">Happy new year my kuchupuchu!!!</div>
 </div>
 
 <!-- PAGE 5 -->
 <div class="page" id="page5">
-    <img src="cat5.png" class="clickable heartbeat" onclick="handleClick(6)">
-    <div class="text">SMILEEEE<br>Click on the camera to reveal photo!!</div>
+    <img src="cat5.png" class="heartbeat" onclick="goPage(6)">
+    <div class="text">SMILEEEE<br>Click on the camera!</div>
 </div>
 
 <!-- PAGE 6 -->
 <div class="page" id="page6">
-    <img src="final.jpg" class="heartbeat" style="max-width:300px; border:10px solid white; box-shadow:0 0 15px rgba(0,0,0,0.3);">
+    <img src="final.jpg" class="heartbeat" style="max-width:300px; border:10px solid white;">
     <div class="text">I Love You ❤️</div>
 </div>
 
 <script>
 const music = document.getElementById("bg-music");
-let musicStarted = false;
-let fadeInterval = null;
+let started = false;
 
-function startMusic() {
-    if (musicStarted) return;
+function startExperience() {
+    if (!started) {
+        music.currentTime = 31;
+        music.volume = 0;
+        music.play();
 
-    music.currentTime = 31;
-    music.volume = 0;
-    music.play();
+        let fade = setInterval(() => {
+            if (music.volume < 0.5) {
+                music.volume += 0.02;
+            } else {
+                clearInterval(fade);
+            }
+        }, 200);
 
-    fadeInterval = setInterval(() => {
-        if (music.volume < 0.5) {
-            music.volume += 0.02;
-        } else {
-            clearInterval(fadeInterval);
-        }
-    }, 200);
-
-    musicStarted = true;
+        started = true;
+    }
+    goPage(3);
 }
 
-function handleClick(page) {
-    startMusic();
-
+function goPage(n) {
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    setTimeout(() => {
-        document.getElementById("page" + page).classList.add("active");
-    }, 150);
+    document.getElementById("page" + n).classList.add("active");
 }
 
 function toggleMusic() {
-    const btn = document.getElementById("muteBtn");
     if (music.paused) {
         music.play();
-        btn.innerText = "🔊";
+        document.getElementById("muteBtn").innerText = "🔊";
     } else {
         music.pause();
-        btn.innerText = "🔇";
+        document.getElementById("muteBtn").innerText = "🔇";
     }
 }
 
 document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-        music.pause();
-    } else if (musicStarted) {
-        music.play();
-    }
+    if (document.hidden) music.pause();
+    else if (started) music.play();
 });
 </script>
 
